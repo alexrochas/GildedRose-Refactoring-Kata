@@ -1,11 +1,40 @@
 (ns gildedrose-refactoring-kata.core)
 
-(def item (create-struct :quality :sell_in))
+(def item (create-struct :name :quality :sell_in))
 
 (defn update_quality
   "update quality in list of items"
   [items]
-  (map #(if (< (:sell_in %) 0) 
-      (update % :quality - 2)
-      (update % :quality dec)
-    ) items))
+  (map #(
+    do (
+      (if (and (not (= (:name %) "Aged Brie")) (not (= (:name %) "Backstage passes to a TAFKAL80ETC concert"))) (
+            if (> (:quality %) 0) (
+              if (not (= (:name %) "Sulfuras, Hand of Ragnaros")) (update % :quality dec)
+            )
+          ) (
+            if (< (:quality %) 50) (
+              do (
+                (update % :quality inc)
+                (if (= (:name %) "Backstage passes to a TAFKAL80ETC concert") (
+                  do (
+                    (if (< (:sell_in %) 11) 
+                      (if (< (:quality %) 50) (update % :quality inc)))
+                    (if (< (:sell_in %) 6) 
+                      (if (< (:quality %) 50) (update % :quality inc)))
+                  )
+                ))
+              )
+            )
+          )
+      )
+      (if (not (= (:name %) "Sulfuras, Hand of Ragnaros")) (update % :sell_in dec))
+      (if (< (:sell_in %) 0) (
+        if (and (not (= (:name %) "Aged Brie")) (not (= (:name %) "Backstage passes to a TAFKAL80ETC concert"))) (
+          if (> (:quality %) 0) (
+            if (not (= (:name %) "Sulfuras, Hand of Ragnaros")) (update % :quality dec)
+          )
+        ) (if (< (:quality %) 50) (update % :quality inc)))
+      ))
+    )
+  items)
+)
