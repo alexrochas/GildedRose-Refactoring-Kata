@@ -3,6 +3,9 @@
 (def item (create-struct :quality :sell_in))
 
 (defn update_quality
-  "update quality of a list of items"
+  "update quality in list of items"
   [items]
-  (map #(update % :quality dec) items))
+  (map #(if (< (:sell_in %) 0) 
+      (update % :quality - 2)
+      (update % :quality dec)
+    ) items))
