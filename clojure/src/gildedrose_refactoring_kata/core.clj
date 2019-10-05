@@ -7,32 +7,30 @@
   [items]
   (map #(
     (comp 
-      (if (and (not (= (:name %) "Aged Brie")) (not (= (:name %) "Backstage passes to a TAFKAL80ETC concert"))) (
-                  if (> (:quality %) 0) (
-                    if (not (= (:name %) "Sulfuras, Hand of Ragnaros")) (update % :quality dec) (%)
-                  ) (%)
+     (fn [item] (if (and (not (= (:name item) "Aged Brie")) (not (= (:name item) "Backstage passes to a TAFKAL80ETC concert"))) (
+                  if (> (:quality item) 0) (
+                    if (not (= (:name item) "Sulfuras, Hand of Ragnaros")) (update item :quality dec) (item)
+                  ) item
                 ) (
-                  if (< (:quality %) 50) (
-                    do (
-                      (update % :quality inc)
-                      (if (= (:name %) "Backstage passes to a TAFKAL80ETC concert") (
-                        do (
-                          (if (< (:sell_in %) 11) 
-                            (if (< (:quality %) 50) (update % :quality inc) %) %)
-                          (if (< (:sell_in %) 6) 
-                            (if (< (:quality %) 50) (update % :quality inc) %) %)
-                        )
-                      ))
-                    )
-                  ) (%)
-                )
-      )
-      (if (not (= (:name %) "Sulfuras, Hand of Ragnaros")) (update % :sell_in inc) %)
-      (if (< (:sell_in %) 0) (
-        if (and (not (= (:name %) "Aged Brie")) (not (= (:name %) "Backstage passes to a TAFKAL80ETC concert"))) (
-          if (> (:quality %) 0) (
-            if (not (= (:name %) "Sulfuras, Hand of Ragnaros")) (update % :quality dec) %
-          ) (%)
-        ) (if (< (:quality %) 50) (update % :quality inc) (%))) %
-      )
-    ) %))items)
+                  if (< (:quality item) 50) (
+                    (comp
+                      (fn [x] (update x :quality inc))
+                      (fn [x] (if (= (:name x) "Backstage passes to a TAFKAL80ETC concert") (
+                        (comp
+                          (fn [y] (if (< (:sell_in y) 11) 
+                            (if (< (:quality y) 50) (update y :quality inc) y) y))
+                          (fn [y] (if (< (:sell_in y) 6) 
+                            (if (< (:quality y) 50) (update y :quality inc) y) y))
+                        ) x
+                      ) x))
+                    ) item
+                  ) item
+                ))) 
+      (fn [item] (if (not (= (:name item) "Sulfuras, Hand of Ragnaros")) (update item :sell_in dec) item))
+      (fn [item] (if (< (:sell_in item) 0) (
+        if (and (not (= (:name item) "Aged Brie")) (not (= (:name item) "Backstage passes to a TAFKAL80ETC concert"))) (
+          if (> (:quality item) 0) (
+            if (not (= (:name item) "Sulfuras, Hand of Ragnaros")) (update item :quality dec) item
+          ) item
+        ) (if (< (:quality item) 50) (update item :quality inc) item)) item)) 
+    ) %) items))
