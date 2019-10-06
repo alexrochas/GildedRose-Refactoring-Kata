@@ -1,6 +1,7 @@
-(ns gildedrose-refactoring-kata.core-test
+(ns gildedrose-refactoring-kata.gilded-rose-test
   (:require [clojure.test :refer :all]
-            [gildedrose-refactoring-kata.core :refer :all]))
+            [gildedrose-refactoring-kata.gilded_rose :refer :all]
+            [gildedrose-refactoring-kata.item :refer :all]))
 
 (deftest update_quality_test
   (testing "quality should drop by one every day before expiration"
@@ -12,4 +13,3 @@
   (testing "quality should drop twice as fast if expired"
     (is (= 8 (:quality (first (update_quality (list (struct-map item :name "Item 3" :quality 10 :sell_in -4)))))))))
 
-    
